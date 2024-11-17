@@ -1,56 +1,28 @@
-import numpy as np
-import cv2
+# Model Definition
+class SimpleActionClassifier(nn.Module):
+    def __init__(self, num_classes):
+        super(SimpleActionClassifier, self).__init__()
+        base_model = models.resnet18(pretrained=True)
+        base_model.fc = nn.sigmoid(base_model.fc.in_features, num_classes)
+        self.model = base_model
 
-def preprocess_input(person_data):
-    """
-    Preprocess the input data for the model.
+    def forward(self, x):
+        return self.model(x)
 
-    Parameters:
-    - person_data: Dictionary {1: [images, centers], 2: [images, centers], ...}
+# Prepare dataset
+dataset = SemiSupervisedDataset(annotated_data, transform=transform)
+dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
 
-    Returns:
-    - frame_input: Combined frame (numpy array).
-    - centers_input: Flattened list of all person centers.
-    - distances_input: Pairwise distances between centers.
-    """
-    all_centers = []
-    combined_frame = None
+# Initialize model
+model = SimpleActionClassifier(num_classes=len(set(action.split("_")[0] for action in annotated_data.keys())))
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    for person_id, (images, centers) in person_data.items():
-        # Use the first image as the representative frame
-        frame = cv2.imread(images[0])  # Read the first image for this person
-        frame = cv2.resize(frame, (224, 224))  # Resize to model's expected input size
-
-        if combined_frame is None:
-            combined_frame = frame
-        else:
-            # Overlay the frames (ensure alignment before combining if needed)
-            combined_frame = cv2.addWeighted(combined_frame, 0.5, frame, 0.5, 0)
-
-        # Add the centers for this person
-        all_centers.extend(centers)
-
-    # Calculate pairwise distances between centers
-    distances_input = calculate_pairwise_distances(all_centers)
-
-    # Flatten the centers
-    centers_input = np.array(all_centers).flatten()
-
-    return combined_frame, centers_input, distances_input
-
-def calculate_pairwise_distances(centers):
-    """
-    Calculate pairwise distances between centers.
-
-    Parameters:
-    - centers: List of center coordinates [(x1, y1), (x2, y2), ...]
-
-    Returns:
-    - A numpy array of pairwise distances
-    """
-    distances = []
-    for i in range(len(centers)):
-        for j in range(i + 1, len(centers)):
-            dist = np.linalg.norm(np.array(centers[i]) - np.array(centers[j]))
-            distances.append(dist)
-    return np.array(distances)
+# Training loop
+for epoch in range(3):  # Small epoch for demonstration
+    for images, _, labels in dataloader:
+        optimizer.zero_grad()
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
