@@ -1,31 +1,27 @@
-import tensorflow as tf
-import numpy as np
+import os
+import random
+import cv2  # OpenCV for video processing
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms, models
+from PIL import Image
+from constants import BEHAVIORS  # Assuming BEHAVIORS is defined in constants.py
 
-from constants import BEHAVIORS
+def predict(image_path):
+    model.load
+    model.eval()
+    image = Image.open(image_path).convert("RGB")
+    image = transform(image).unsqueeze(0).to(device)
+    
+    with torch.no_grad():
+        outputs = model(image)
+        _, predicted = torch.max(outputs, 1)
+        print(f"[DEBUG] Prediction made for image: {image_path}")
+        return BEHAVIORS[predicted.item()]
 
-# Load the saved TensorFlow model
-model_path = "path/to/your/saved/model"  # Replace with your model's path
-model = tf.keras.models.load_model(model_path)
-
-# Incoming data to classify (example)
-# Replace `incoming_data` with your preprocessed input data
-incoming_data = np.array([
-    # Example data - this should match the input shape of the model
-    # Replace this with actual data to classify
-    [0.1, 0.2, 0.3, 0.4, 0.5], 
-    [0.6, 0.7, 0.8, 0.9, 1.0]
-])
-
-# Ensure data matches the input shape of the model
-# Adjust as needed depending on your data preprocessing
-incoming_data = np.expand_dims(incoming_data, axis=0) if len(incoming_data.shape) == 1 else incoming_data
-
-# Make predictions
-predictions = model.predict(incoming_data)
-
-# Map predictions to behavior classes
-classified_behaviors = [BEHAVIORS[np.argmax(pred)] for pred in predictions]
-
-# Output the results
-for i, behavior in enumerate(classified_behaviors):
-    print(f"Data Point {i + 1}: Classified as {behavior}")
+# Example usage of the prediction function
+test_image = "C:/code/hackathon24/SPHAR-Dataset/temp_frames/walking/example_frame_0.jpeg"
+predicted_behavior = predict(test_image)
+print(f"Predicted behavior: {predicted_behavior}")

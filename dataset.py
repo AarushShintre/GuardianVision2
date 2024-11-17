@@ -7,7 +7,7 @@ def get_training_videos():
     videos = {}
 
     # Walk through the directory structure.
-    for root, dirs, files in os.walk("../SPHAR-dataset/videos"):
+    for root, dirs, files in os.walk("C:\code\hackathon24\SPHAR-Dataset\videos"):
         for dir_name in dirs:
             if dir_name in BEHAVIORS:
                 actionType = dir_name  # Identify the action type based on the directory name.
