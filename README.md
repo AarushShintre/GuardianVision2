@@ -1,7 +1,6 @@
 # GuardianVision2
 
-git remote add origin https://github.com/AarushShintre/GuardianVision2.git
-git pull origin main
+git clone  https://github.com/AarushShintre/GuardianVision2.git
 
 git checkout -b yourbranchname
 <start developing here>
