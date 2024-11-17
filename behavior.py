@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import glob
 import csv
+from run_model import predict
 
 # Define behaviors and their color mappings
 BEHAVIORS = ['falling', 'hitting', 'igniting', 'kicking', 'luggage', 'murdering', 
@@ -64,7 +65,7 @@ def process_video_with_behaviors(behavior_list):
         display_frame = frame.copy()
 
         # Get current behavior
-        current_behavior = behavior_list[frame_count] if frame_count < len(behavior_list) else 'neutral'
+        current_behavior = predict(frame) # call the predict
         box_color = get_box_color(current_behavior)
 
         for box in boxes:
