@@ -89,7 +89,7 @@ def convert_to_desired_format(tracked_boxes):
 
 if __name__ == "__main__":
     # Input video path
-    video_path = r"./SPHAR-Dataset/videos/kicking/bitint_kick_0001.mp4"
+    video_path = "/Users/aarushshintre/hackUTD/SPHAR-Dataset/videos/kicking/kicking/bitint_kick_0001.mp4"
     
     # Process video and get person data
     tracked_boxes = process_video_to_person_data(video_path)

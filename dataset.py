@@ -1,20 +1,32 @@
-class SemiSupervisedDataset(Dataset):
-    def __init__(self, data, transform=None):
-        self.data = data
-        self.transform = transform
-        self.keys = list(data.keys())
-        self.actions = [key.split("instance_")[0] for key in self.keys]
+import os
+import random
+from constants import BEHAVIORS  
 
-    def __len__(self):
-        return len(self.keys)
+def get_training_videos():
+    # Initialize a dictionary to hold video counts for each behavior.
+    videos = {}
 
-    def __getitem__(self, idx):
-        key = self.keys[idx]
-        images, center = self.data[key]
-        action = self.actions[idx]
+    # Walk through the directory structure.
+    for root, dirs, files in os.walk("../SPHAR-dataset/videos"):
+        for dir_name in dirs:
+            if dir_name in BEHAVIORS:
+                actionType = dir_name  # Identify the action type based on the directory name.
 
-        if self.transform:
-            images = [self.transform(image) for image in images]
-        images = torch.stack(images)
-        return images, torch.tensor(center, dtype=torch.float32), action
+                # Get the full path of the directory.
+                dir_path = os.path.join(root, dir_name)
 
+                # List all files in the directory.
+                all_files = os.listdir(dir_path)
+
+                # Sample up to 10 files (or fewer if less than 10 files exist).
+                sampled_files = random.sample(all_files, min(len(all_files), 10))
+
+                # Initialize the count for the action type if not already done.
+                if actionType not in videos:
+                    videos[actionType] = 0
+
+                # Update the count with the number of sampled files.
+                videos[actionType] += len(sampled_files)
+
+    # return the resulting dictionary.
+    return videos 
