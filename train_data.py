@@ -103,46 +103,6 @@ dataset = SPHARDataset(transform=transform)
 dataloader = DataLoader(dataset, batch_size=8, shuffle=True)
 print("[DEBUG] Dataloader initialized.")
 
-def train_model():
-    get_training_videos()
-
-    transform = transforms.Compose([
-        transforms.Resize((64, 64)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
-    dataset = SPHARDataset(transform=transform)
-    dataloader = DataLoader(dataset, batch_size=8, shuffle=True)
-    print("[DEBUG] Dataloader initialized.")
-
-    model = SimpleCNN(num_classes=len(BEHAVIORS))
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
-    print("[DEBUG] Model initialized.")
-
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-
-    num_epochs = 3
-    for epoch in range(num_epochs):
-        model.train()
-        total_loss = 0
-        for images, labels in dataloader:
-            images, labels = images.to(device), labels.to(device)
-            outputs = model(images)
-            loss = criterion(outputs, labels)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            total_loss += loss.item()
-        print(f"[DEBUG] Epoch [{epoch+1}/{num_epochs}] Loss: {total_loss/len(dataloader):.4f}")
-
-    torch.save(model.state_dict())
-    print(f"[DEBUG] Model saved!")
-
-if __name__ == "__main__":
-    train_model()
-
 # Simplified CNN Model
 class SimpleCNN(nn.Module):
     def __init__(self, num_classes):
