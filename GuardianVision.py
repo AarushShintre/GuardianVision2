@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 import base64
+import subprocess
+import tempfile
 
 st.set_page_config(
     page_title="GuardianVision",
@@ -28,7 +30,6 @@ def load_image_as_base64(image_path):
 encoded_logo = load_image_as_base64(logo_path)
 
 if encoded_logo:
-    # Insert custom HTML and CSS to center the logo
     st.sidebar.markdown(
         f"""
         <style>
@@ -70,26 +71,33 @@ def render_tab_content(selected_tab):
             st.write(f"**Filename:** {uploaded_file.name}")
             st.video(uploaded_file)
 
-            # Enable the "Train" button only if a file is uploaded
-            train_button_enabled = True
+            # Save the uploaded file to a temporary location
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_file:
+                temp_file.write(uploaded_file.read())
+                temp_file_path = temp_file.name
+
+            # "Process with Behavior.py" Button
+            if st.button("Process with Behavior.py"):
+                try:
+                    st.write("Processing video... Please wait.")
+                    # Call behavior.py script with the file path
+                    result = subprocess.run(
+                        ["python", "behavior.py", temp_file_path],
+                        capture_output=True,
+                        text=True
+                    )
+                    if result.returncode == 0:
+                        st.success("Video processed successfully!")
+                        st.write("### Output:")
+                        st.write(result.stdout)  # Display the output from behavior.py
+                    else:
+                        st.error("Error occurred during processing.")
+                        st.write(result.stderr)  # Display error details
+                except Exception as e:
+                    st.error(f"Failed to process the video: {e}")
+
         else:
             st.info("Please upload an MP4 file to continue.")
-            train_button_enabled = False
-
-        # "Train" Button
-        if st.button("Train Model", disabled=not train_button_enabled):
-            st.write("Training model... Please wait.")
-            try:
-                # Call the train_model.py script using subprocess
-                result = subprocess.run(
-                    ["python", "train_model.py"], capture_output=True, text=True
-                )
-                if result.returncode == 0:
-                    st.success("Model training completed successfully!")
-                else:
-                    st.error(f"Error during training: {result.stderr}")
-            except Exception as e:
-                st.error(f"Failed to train the model: {e}")
 
     elif selected_tab == "Instructions":
         st.write(
