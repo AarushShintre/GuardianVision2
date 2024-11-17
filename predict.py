@@ -1,0 +1,1 @@
+#take in bounding boxes and call a model.predict function
