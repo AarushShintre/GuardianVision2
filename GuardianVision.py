@@ -126,10 +126,10 @@ def render_tab_content(selected_tab):
             """
             ### Contact Us:
             If you have any questions or feedback, feel free to reach out to us:
-            - **Aarush Shintre**: support@guardiavision.com
-            - **Ayush Mendhe**: support@guardiavision.com
-            - **Mihir Tirumalasetti**: support@guardiavision.com
-            - **Natalie Larksukthom**: support@guardiavision.com
+            - **Aarush Shintre**: aarush.shintre@utdallas.edu
+            - **Ayush Mendhe**: ayush.mendhe@utdallas.edu
+            - **Mihir Tirumalasetti**: mihir.tirumalasetti@utdallas.edu
+            - **Natalie Larksukthom**: natalie.larksukthom@utdallas.edu
             - **Address**: 800 W Campbell Rd, Richardson, TX 75080
             """
         )
