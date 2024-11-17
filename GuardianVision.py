@@ -97,7 +97,7 @@ def render_tab_content(selected_tab):
             ### Upload Instructions:
             1. Click the 'Choose an MP4 file' button to select a file from your computer.
             2. Once the file is uploaded, you will be able to preview it directly in the app.
-            3. Supported format: MP4 (up to 200MB).
+            3. Supported format: MP4 (up to 488GB).
             """
         )
 
@@ -126,9 +126,11 @@ def render_tab_content(selected_tab):
             """
             ### Contact Us:
             If you have any questions or feedback, feel free to reach out to us:
-            - **Email**: support@guardiavision.com
-            - **Phone**: +1-800-123-4567
-            - **Address**: 1234 Visionary St, Tech City, XYZ 12345
+            - **Aarush Shintre**: support@guardiavision.com
+            - **Ayush Mendhe**: support@guardiavision.com
+            - **Mihir Tirumalasetti**: support@guardiavision.com
+            - **Natalie Larksukthom**: support@guardiavision.com
+            - **Address**: 800 W Campbell Rd, Richardson, TX 75080
             """
         )
 
@@ -140,7 +142,7 @@ def render_tab_content(selected_tab):
             A: We currently support MP4 files.
 
             **Q: How large can my file be?**  
-            A: The maximum file size is 200MB.
+            A: The maximum file size is 488GB.
 
             **Q: How do I upload my file?**  
             A: Simply click the 'Choose an MP4 file' button and select your file.
