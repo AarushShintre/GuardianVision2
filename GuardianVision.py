@@ -80,9 +80,14 @@ def render_tab_content(selected_tab):
             if st.button("Process with Behavior.py"):
                 try:
                     st.write("Processing video... Please wait.")
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as output_file:
+                        output_file_path = output_file.name
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as csv_file:
+                        csv_file_path = csv_file.name
+
                     # Call behavior.py script with the file path
                     result = subprocess.run(
-                        ["python", "behavior.py", temp_file_path],
+                        ["python", "behavior.py", temp_file_path, "--output", output_file_path, "--csv", csv_file_path],
                         capture_output=True,
                         text=True
                     )
@@ -90,9 +95,20 @@ def render_tab_content(selected_tab):
                         st.success("Video processed successfully!")
                         st.write("### Output:")
                         st.write(result.stdout)  # Display the output from behavior.py
+                        st.video(output_file_path)
+                        if os.path.exists(csv_file_path):
+                            st.success("Tracking CSV generated.")
+                            with open(csv_file_path, "rb") as csv_file:
+                                st.download_button(
+                                    "Download tracking CSV",
+                                    csv_file,
+                                    file_name="behavior_tracking.csv",
+                                    mime="text/csv",
+                                )
                     else:
                         st.error("Error occurred during processing.")
-                        st.write(result.stderr)  # Display error details
+                        if result.stderr:
+                            st.write(result.stderr)  # Display error details
                 except Exception as e:
                     st.error(f"Failed to process the video: {e}")
 

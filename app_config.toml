@@ -1,0 +1,20 @@
+[guardianvision]
+inference_model = "model.pth"
+default_output_video = "behavior_detection.mp4"
+default_tracking_csv = "behavior_tracking.csv"
+fps_fallback = 20
+safe_behaviors = ["neutral", "sitting", "walking"]
+detection_method = "yolov3"
+hog_hit_threshold = 0.0
+hog_win_stride = [8, 8]
+hog_padding = [32, 32]
+hog_scale = 1.05
+yolo_cfg = "yolov3.cfg"
+yolo_weights = "yolov3.weights"
+yolo_names = "coco.names"
+yolo_confidence_threshold = 0.5
+yolo_nms_threshold = 0.4
+yolo_person_class = "person"
+tracking_enabled = true
+tracking_iou_threshold = 0.3
+tracking_max_missing_frames = 10

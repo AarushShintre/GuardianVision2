@@ -1,32 +1,53 @@
-import os
 import random
-from constants import BEHAVIORS  
+from pathlib import Path
 
-def get_training_videos():
-    # Initialize a dictionary to hold video counts for each behavior.
+from constants import BEHAVIORS
+
+
+BASE_DIR = Path(__file__).resolve().parent
+DATASET_DIR = BASE_DIR / "SPHAR-Dataset"
+VIDEOS_DIR = DATASET_DIR / "videos"
+
+
+def validate_videos_dir(videos_dir=VIDEOS_DIR):
+    videos_dir = Path(videos_dir)
+    if not videos_dir.exists():
+        raise FileNotFoundError(
+            f"SPHAR videos directory not found: {videos_dir}. "
+            "Expected dataset videos under SPHAR-Dataset/videos."
+        )
+    if not any(videos_dir.rglob("*.mp4")):
+        raise FileNotFoundError(
+            f"No MP4 videos found under: {videos_dir}. "
+            "The SPHAR dataset appears missing or empty."
+        )
+
+
+def get_training_videos(videos_dir=VIDEOS_DIR, sample_size=10):
+    validate_videos_dir(videos_dir)
     videos = {}
 
-    # Walk through the directory structure.
-    for root, dirs, files in os.walk("C:\code\hackathon24\SPHAR-Dataset\videos"):
-        for dir_name in dirs:
-            if dir_name in BEHAVIORS:
-                actionType = dir_name  # Identify the action type based on the directory name.
+    for behavior_dir in Path(videos_dir).rglob("*"):
+        if not behavior_dir.is_dir() or behavior_dir.name not in BEHAVIORS:
+            continue
 
-                # Get the full path of the directory.
-                dir_path = os.path.join(root, dir_name)
+        all_files = [path for path in behavior_dir.iterdir() if path.is_file()]
+        sampled_files = random.sample(all_files, min(len(all_files), sample_size))
+        videos[behavior_dir.name] = videos.get(behavior_dir.name, 0) + len(sampled_files)
 
-                # List all files in the directory.
-                all_files = os.listdir(dir_path)
+    return videos
 
-                # Sample up to 10 files (or fewer if less than 10 files exist).
-                sampled_files = random.sample(all_files, min(len(all_files), 10))
 
-                # Initialize the count for the action type if not already done.
-                if actionType not in videos:
-                    videos[actionType] = 0
+def main():
+    try:
+        videos = get_training_videos()
+    except FileNotFoundError as error:
+        print(error)
+        return 1
 
-                # Update the count with the number of sampled files.
-                videos[actionType] += len(sampled_files)
+    print(videos)
+    return 0
 
-    # return the resulting dictionary.
-    return videos 
+
+if __name__ == "__main__":
+    raise SystemExit(main())

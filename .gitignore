@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+
+.venv/
+venv/
+.env
+.DS_Store
+
+SPHAR-Dataset/temp_frames/
+output_frames/
+
+audit_*.mp4
+audit_*.csv
+behavior_detection_test_*.mp4
+behavior_tracking_test_*.csv
+run_model_output.mp4
+run_model_tracking.csv
